@@ -18,4 +18,4 @@ def take_first_n_lines(input_file, output_file, n=1000000):
             writer.writerow(row)
 
 # Usage
-take_first_n_lines('evals.csv', 'less_evals.csv', 1000000)
+take_first_n_lines('evals.csv', 'less_evals.csv', 840000)

@@ -38,9 +38,9 @@ with open('less_evals.csv', 'r') as source:
     frequencies = [item[1] for item in freq]
     
     plt.figure(figsize=(15, 5))
-    plt.bar(depths, frequencies, color='skyblue')   # create bar chart with x-axis: characters | y-axis: frequencies
-    plt.title('Depth Frequency')                    # bar chart title
-    plt.xlabel('Depth')                            # bar chart x-axis label
-    plt.ylabel('Frequency')                             # bar chart y-axis label
+    plt.bar(depths, frequencies, color='skyblue')   
+    plt.title('Depth Frequency')                  
+    plt.xlabel('Depth')                           
+    plt.ylabel('Frequency')                           
     plt.tight_layout()
     plt.show()
