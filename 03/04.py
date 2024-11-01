@@ -29,6 +29,7 @@ file_path = 'less_evals.csv'
 # file_path = 'evals.csv'   
 try:     
     with open(file_path, 'r') as source: 
+    # with open('evals.csv', 'r') as source: 
         reader = csv.reader(source)
         header = next(reader)
         
