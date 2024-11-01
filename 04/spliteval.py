@@ -1,21 +1,26 @@
 import csv
 
-def take_first_n_lines(input_file, output_file, n=1000000):
-    with open(input_file, 'r') as infile, open(output_file, 'w', newline='') as outfile:
-        reader = csv.reader(infile)
-        writer = csv.writer(outfile)
+'''
+(string, string, int) -> ()
+Writes the first n amount of lines from source into a new file.
+Takes the filepath for the source file, the new file, and the amount of lines to copy.
+'''
+def take_n_lines(source_file, output_file, n=1000000):
+    with open(source_file, 'r') as source, open(output_file, 'w', newline='') as output:     # open files
+        reader = csv.reader(source) # create reader
+        writer = csv.writer(output) # create writer
         
-        # Copy the header first, if it exists
+        # Read and write the header 
         header = next(reader, None)
         if header:
             writer.writerow(header)
-            n -= 1  # Reduce count for header row if present
+            n -= 1  # deincrement n
         
-        # Write the first `n` lines
+        # Read and write the specified amount of lines
         for i, row in enumerate(reader):
             if i >= n:
                 break
-            writer.writerow(row)
+            writer.writerow(row)    # write the line
 
-# Usage
-take_first_n_lines('evals.csv', 'less_evals.csv', 840000)
+# call the function with the desired files and amount of lines
+take_n_lines('evals.csv', 'smallest_evals.csv', 840000) 
