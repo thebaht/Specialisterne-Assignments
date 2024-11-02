@@ -18,5 +18,4 @@
 - [ ] Fix terminal alpha
 ### Desktop
 - [ ] mysql server+workbench
-- [ ] python
 - [ ] phone/desktop calendar sync
