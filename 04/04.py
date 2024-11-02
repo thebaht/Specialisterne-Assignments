@@ -76,9 +76,9 @@ def select(states, line=(None, None), depth=('==', None), centipawn=('==', None)
                 yield d # yield the dictionary with the data, since row passed all checks.
             
 '''
-csv.reader -> list<list>
+(multiprocessing.Queue, string) -> ()
 selects rows where mate == 20.0. 
-Counts the amount of rows, calculates their average/max/min depth, prints the result to console and returns lists of values for charts'''
+Opens and reads the file from the provided path, then counts the amount of rows, calculates their average/max/min depth, prints the result to console and adds lists of values for charts to multiprocessing.Queue'''
 def eval1(queue, file_path):
     try:
         with open(file_path, 'r') as source: # open file
@@ -99,8 +99,8 @@ def eval1(queue, file_path):
             print(f"\nEval1:\nDepth for {c} mate evaluations of 20.0: \n\tAverage:\t{a/c}\n\tMax:\t{max}\n\tMin:\t{min}")
             freq = sorted(freq.items(), key=lambda x: x)    # sort frequncies for nicer charts
             lists = [[item[0] for item in freq], [item[1] for item in freq]]    # organise depths and frequencies in list<list> for charts
-            queue.put( lists)  # # put results in queue
-            #Error messages if something breaks while running
+            queue.put(lists)  # # put results in queue
+    #Error messages if something breaks while running
     except FileNotFoundError:   
         print(f"Error: The file '{file_path}' was not found.")
     except PermissionError:
@@ -109,9 +109,9 @@ def eval1(queue, file_path):
         print(f"An unexpected error occurred: {e}")
 
 '''
-csv.reader -> list<list>
+(multiprocessing.Queue, string) -> ()
 selects rows where centipawn is empty. 
-Counts the amount of rows, calculates their average/max/min depth, prints the result to console and returns lists of values for charts'''
+Opens and reads the file from the provided path, then counts the amount of rows, calculates their average/max/min depth, prints the result to console and adds lists of values for charts to multiprocessing.Queue'''
 def eval2(queue, file_path):
     try:
         with open(file_path, 'r') as source: # open file
@@ -146,7 +146,6 @@ profiler.enable()
 
 # File to read from
 file_path = 'less_evals.csv'       
-# file_path = 'evals.csv'  
 
 if __name__ == '__main__':
     # create queues for storing results
@@ -169,12 +168,9 @@ if __name__ == '__main__':
     e1 = queue1.get()
     e2 = queue2.get()
     
-    print(f"\n_______________\ncProfile:\n")  # to make console more readable
+    print(f"\n__________{' _'*50}\n\n cProfile:\n")   # to make console more readable
     profiler.print_stats()  # print profiler stats
     
-
-
-
     # create bar chart for the 1st evaluation
     plt.figure(figsize=(15, 5))
     plt.bar(e1[0], e1[1], color='skyblue')   
