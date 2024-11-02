@@ -15,6 +15,7 @@
 - [ ] Windows: Default language
 - [ ] fn keys
 - [ ] email forwarding
+- [ ] Fix terminal alpha
 ### Desktop
 - [ ] mysql server+workbench
 - [ ] python
