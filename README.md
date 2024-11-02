@@ -19,5 +19,4 @@
 ### Desktop
 - [ ] mysql server+workbench
 - [ ] python
-- [ ] clean hdd space
 - [ ] phone/desktop calendar sync
