@@ -4,18 +4,17 @@
 
 # Setup
 ### Laptop
-- [ ] Oh My Posh
+- [ ] hideTaskbar
+- [ ] Fix terminal alpha
+- [ ] Rainmeter
 - [ ] Pomodoro
-- [ ] Hourglass
+- [ ] Oh My Posh
 - [ ] Spotify
 - [ ] Markdown editor
-- [ ] Rainmeter
-- [ ] hideTaskbar
 - [ ] Windows: Login
 - [ ] Windows: Default language
 - [ ] fn keys
 - [ ] email forwarding
-- [ ] Fix terminal alpha
 ### Desktop
 - [ ] mysql server+workbench
 - [ ] phone/desktop calendar sync
