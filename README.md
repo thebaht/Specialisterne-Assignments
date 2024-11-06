@@ -1,6 +1,6 @@
 # Todo
 ### Assignment
-- [ ] Scrollbar
+- [x] Scrollbar
 - [ ] Portable
 ### Misc
 - [ ] CV
