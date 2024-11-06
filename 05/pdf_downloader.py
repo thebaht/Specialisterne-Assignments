@@ -75,12 +75,11 @@ df = df[['Pdf_URL', 'Report Html Address']] # removes irrelevant columns. Not ne
 for i, row in df.head(9).iterrows():
     label = tk.Label(frame, text=f"{i}", image=arrow_icon, compound='right', font=global_font, fg='gray90', bg='gray6')
     label.pack()
+    labels[i]=label
     #! duplicate for scroll text 
     label_alt = tk.Label(frame, text=f"{i}", image=arrow_icon, compound='right', font=global_font, fg='gray90', bg='gray6')
     label_alt.pack()
     #! - - - - - - - - - - - - - 
-    
-    labels[i]=label
 
 thread = threading.Thread(target=main)
 thread.start()
