@@ -1,14 +1,14 @@
 import pandas as pd
+import os
 from os import walk, makedirs
 import requests
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import tkinter as tk
-from tkinter import Y, Scrollbar, font, ttk
+from tkinter import font, ttk, filedialog
 from PIL import Image, ImageTk
 import threading
+import sys
 
-
-
+# Setup ______________________________________________________________________________________________________________________________________________
 source_path = 'GRI_2017_2020.xlsx'
 output_path = './pdf-files/'
 makedirs('pdf-files', exist_ok=True)
@@ -16,23 +16,77 @@ makedirs('pdf-files', exist_ok=True)
 labels = {}
 downloaded = set()
 failed = set()
+nums = set()
 
 
-print(f'\nReading file..')
-df = pd.read_excel(source_path, index_col='BRnum')
-df = df[df.Pdf_URL.notnull() == True]
-df = df[['Pdf_URL', 'Report Html Address']] # removes irrelevant columns. Not necessary to do, but it only adds 0.01s and feels cleaner.
-
-for (dirpath, dirnames, filenames) in walk(output_path):
-    downloaded.update(map(lambda x: x[:-4], filenames))
 
 arrow_path = './icons/square-arrow-down.png'
 check_path = './icons/square-check.png'
 x_path = './icons/square-x.png'
 
+stop_event = threading.Event()
+
+
+# Program functions ______________________________________________________________________________________________________________________________________________
+def download(path, brnum, url, alt_url=pd.NA):
+    session = requests.Session()
+    try:
+        with session.get(url, timeout=20, stream=True) as response:
+            response.raise_for_status()
+            if not response.content[:4] == b'%PDF':
+                raise Exception
+            with open(path, 'wb') as pdf:
+                for chunk in response.iter_content(chunk_size=1024):
+                    if stop_event.is_set():
+                        print('blah')
+                        session.close()
+                        return
+                    pdf.write(chunk)
+                labels[brnum].config(image=check_icon)
+                downloaded.add(brnum)
+    except Exception as e:
+        if pd.isna(alt_url):
+            labels[brnum].config(image=x_icon)
+            failed.add(brnum)  
+        else:
+            download(path, brnum, alt_url)
+    finally:
+        session.close()
+
+def main():
+    threads = []
+    for brnum, row in df.head(100).iterrows():
+        if brnum in downloaded:
+            labels[brnum].config(image=check_icon)
+            continue
+        t = threading.Thread(target=download, args=(output_path+brnum+'.pdf', brnum, row['Pdf_URL'], row['Report Html Address']), daemon=True)
+        threads.append(t)
+        t.start()
+            
+    [t.join() for t in threads]
+    global status_label2
+    status_label2.config(text='Complete!')
+    
+    with open(output_path+'_status.txt', 'w') as output:
+        for brnum in nums:
+            if brnum in failed:
+                status = 'Failed'
+            else:
+                status = 'Downloaded'
+            output.write(f"{brnum}\t\t{status}\n")
+            
+
+# GUI ______________________________________________________________________________________________________________________________________________
+def on_close():
+    """Callback function to handle window close."""
+    stop_event.set()
+    root.destroy()  # Destroy the main Tkinter window
+    sys.exit('Exiting..')     # Ensure the program terminates completely
+
 root = tk.Tk()                          # Create main window
-root.geometry("760x600")                # Set window dimensions
+root.geometry("740x585")                # Set window dimensions
 root.config(bg='gray6')              # Set window color
+root.protocol("WM_DELETE_WINDOW", on_close)
 
 arrow_icon = ImageTk.PhotoImage(Image.open(arrow_path))
 check_icon = ImageTk.PhotoImage(Image.open(check_path))
@@ -66,7 +120,7 @@ style.layout("Custom.Vertical.TScrollbar",
 
 canvas = tk.Canvas(root, bg='gray6', bd=3, highlightbackground='gray6', highlightthickness=3)
 scrollbar = ttk.Scrollbar(root, orient="vertical", command=canvas.yview, style="Custom.Vertical.TScrollbar")
-frame = tk.Frame(canvas, padx=24, pady=14, bg='gray6')
+frame = tk.Frame(canvas, padx=24, pady=0, bg='gray6')
 
 # Function to scroll on Windows (mouse wheel event binding)
 def on_mouse_wheel(event):
@@ -87,52 +141,80 @@ scrollbar.pack(side="right", fill="y")
 canvas.pack(side="left", fill="both", expand=True)
 
 
-def download(path, brnum, url, alt_url=pd.NA):
-    try:
-        with requests.get(url, timeout=20, stream=True) as response:
-            response.raise_for_status()
-            if not response.content[:4] == b'%PDF':
-                raise Exception
-            with open(path, 'wb') as pdf:
-                for chunk in response.iter_content(chunk_size=8192):
-                    pdf.write(chunk)
-                labels[brnum].config(image=check_icon)
-                downloaded.add(brnum)
-    except Exception as e:
-        if pd.isna(alt_url):
-            labels[brnum].config(image=x_icon)
-            failed.add(brnum)  
+def filter_all():
+    for brnum in nums:
+        labels[brnum].grid()
+
+def filter_sucess():
+    for brnum in nums:
+        if brnum in downloaded:
+            labels[brnum].grid()
         else:
-            download(path, brnum, alt_url)
+            labels[brnum].grid_remove()
 
-def main():
-    with ThreadPoolExecutor() as executor:
-        for brnum, row in df.head(20).iterrows():
-        # for i, row in df.iterrows():
-            if brnum in downloaded:
-                labels[brnum].config(image=check_icon)
-                continue
-            path = output_path+brnum+'.pdf'
-            executor.submit(download, path, brnum, row['Pdf_URL'], row['Report Html Address'])
-            
-    with open(output_path+'_status.txt', 'w') as output:
-        for brnum, row in df.head(20).iterrows():
-            if brnum in failed:
-                status = 'Failed'
-            else:
-                status = 'Downloaded'
-            output.write(f"{brnum}\t\t{status}\n")
+def filter_progress():
+    for brnum in nums:
+        if brnum in downloaded | failed:
+            labels[brnum].grid_remove()
+        else:
+            labels[brnum].grid()
+
+def filter_failed():
+    for brnum in nums:
+        if brnum in failed:
+            labels[brnum].grid()
+        else:
+            labels[brnum].grid_remove()
+
+banner = tk.Frame(root, pady=24, bg='gray6')
+banner.pack(before=canvas, fill='x')
+status_container = tk.Frame(banner, padx=34, bg='gray6')
+status_container.pack(side='left')
+status_label1 = tk.Label(status_container, text='Download: ', font=('Verdana', 14), fg='gray90', bg='gray6')
+status_label1.pack(side='left')
+status_label2 = tk.Label(status_container, text='Getting ready', font=('Verdana', 14, 'italic'), fg='gray90', bg='gray6')
+status_label2.pack(side='left')
+container_buttons = tk.Frame(banner, padx=45, bg='gray6')
+container_buttons.pack(side='right')
+filter_label = tk.Label(container_buttons, text='Filter:', padx=10, font=global_font, fg='gray90', bg='gray6')
+filter_label.grid(row=0, column=0)
+button_all = tk.Button(container_buttons, text="All", command=filter_all)
+button_all.grid(row=0, column=1)
+button_complete = tk.Button(container_buttons, text="Completed", command=filter_sucess)
+button_complete.grid(row=0, column=2)
+button_progress = tk.Button(container_buttons, text="In progress", command=filter_progress)
+button_progress.grid(row=0, column=3)
+button_failed = tk.Button(container_buttons, text="Failed", command=filter_failed)
+button_failed.grid(row=0, column=4)
 
 
-for i, (brnum, row) in enumerate(df.head(20).iterrows()):
-# for i, row in df.iterrows():
-    row = i // 5
-    col = i % 5
+# Handle input file ________________________________________________________________________________________________________________________________
+source_path = filedialog.askopenfilename(
+    initialdir=os.getcwd(),
+    title="Select a File",
+    filetypes=(("Microsoft Excel Worksheet", "*.xlsx"), ("All Files", "*.*"))
+)
+
+print(f'\nReading file..')
+df = pd.read_excel(source_path, index_col='BRnum')
+df = df[df.Pdf_URL.notnull() == True]
+df = df[['Pdf_URL', 'Report Html Address']] # removes irrelevant columns. Not necessary to do, but it only adds 0.01s and feels cleaner.
+
+for (dirpath, dirnames, filenames) in walk(output_path):
+    downloaded.update(map(lambda x: x[:-4], filenames))
+
+status_label2.config(text='In Progress..')
+for i, (brnum, row) in enumerate(df.head(100).iterrows()):
+# for i, (brnum, row) in enumerate(df.iterrows()):
+    r = i // 5
+    c = i % 5
     label = tk.Label(frame, text=f"{brnum}", padx=5, image=arrow_icon, compound='right', font=global_font, fg='gray90', bg='gray6')
-    label.grid(row=row, column=col, padx=6, pady=2)
-    # label.pack(padx=44, pady=1)
+    label.grid(row=r, column=c, padx=6, pady=2)
     labels[brnum]=label
+    nums.add(brnum)
+    
 
-thread = threading.Thread(target=main)
+# start main program logic _________________________________________________________________________________________________________________________
+thread = threading.Thread(target=main, daemon=True)
 thread.start()
 root.mainloop()
