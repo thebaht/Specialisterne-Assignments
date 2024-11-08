@@ -38,7 +38,6 @@ def download(path, brnum, url, alt_url=pd.NA):
             with open(path, 'wb') as pdf:
                 for chunk in response.iter_content(chunk_size=1024):
                     if stop_event.is_set():
-                        print('blah')
                         session.close()
                         return
                     pdf.write(chunk)
