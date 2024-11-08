@@ -7,22 +7,35 @@ from tkinter import font, ttk, filedialog
 from PIL import Image, ImageTk
 import threading
 import sys
+import time
+
 
 # Setup ______________________________________________________________________________________________________________________________________________
 source_path = 'GRI_2017_2020.xlsx'
 output_path = './pdf-files/'
 makedirs('pdf-files', exist_ok=True)
 
+
 labels = {}
 downloaded = set()
 failed = set()
 nums = set()
 
+def resource_path(relative_path):
+    try:
+        # PyInstaller creates a temp folder _MEIPASS where it stores bundled files
+        base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    except AttributeError:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+    
+    return os.path.join(base_path, relative_path)
+
+# Use the function to get the correct path to the images
+arrow_path = resource_path('images/square-arrow-down.png')
+check_path = resource_path('images/square-check.png')
+x_path = resource_path('images/square-x.png')
 
 
-arrow_path = './icons/square-arrow-down.png'
-check_path = './icons/square-check.png'
-x_path = './icons/square-x.png'
 
 stop_event = threading.Event()
 
@@ -52,16 +65,27 @@ def download(path, brnum, url, alt_url=pd.NA):
     finally:
         session.close()
 
+def daemon_thread_factory():
+    def create_daemon_thread(*args, **kwargs):
+        thread = threading.Thread(*args, **kwargs)
+        thread.daemon = True
+        return thread
+    return create_daemon_thread()
+
 def main():
     threads = []
-    for brnum, row in df.head(100).iterrows():
+    for brnum, row in df.iterrows():
         if brnum in downloaded:
             labels[brnum].config(image=check_icon)
             continue
+        
+        while threading.active_count() > 100:
+            time.sleep(0.1) 
+            
         t = threading.Thread(target=download, args=(output_path+brnum+'.pdf', brnum, row['Pdf_URL'], row['Report Html Address']), daemon=True)
         threads.append(t)
         t.start()
-            
+    
     [t.join() for t in threads]
     global status_label2
     status_label2.config(text='Complete!')
@@ -203,8 +227,7 @@ for (dirpath, dirnames, filenames) in walk(output_path):
     downloaded.update(map(lambda x: x[:-4], filenames))
 
 status_label2.config(text='In Progress..')
-for i, (brnum, row) in enumerate(df.head(100).iterrows()):
-# for i, (brnum, row) in enumerate(df.iterrows()):
+for i, (brnum, row) in enumerate(df.iterrows()):
     r = i // 5
     c = i % 5
     label = tk.Label(frame, text=f"{brnum}", padx=5, image=arrow_icon, compound='right', font=global_font, fg='gray90', bg='gray6')
