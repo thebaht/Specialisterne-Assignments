@@ -86,7 +86,7 @@ def main():
     """Iterates through the dataframe with links, starts the download in seperate threads, then writes the status of each file to a new file.
     """
     threads = []    # list to hold threads
-    for brnum, row in df.head(70).iterrows():       # get the brnum and data from the dataframe
+    for brnum, row in df.iterrows():       # get the brnum and data from the dataframe
         if brnum in downloaded:                     # if file already downloaded
             labels[brnum].config(image=check_icon)  # update the icon
             continue                                # continue to next file
@@ -255,7 +255,7 @@ for (dirpath, dirnames, filenames) in walk(output_path):    # retrieve informati
     downloaded.update(map(lambda x: x[:-4], filenames))     # add filename without extension to set of downloaded brnums
 
 status_label2.config(text='In Progress..')      # update gui label to indicate download starting
-for i, (brnum, row) in enumerate(df.head(70).iterrows()):   # iterate through dataframe while adding an index to each entry
+for i, (brnum, row) in enumerate(df.iterrows()):   # iterate through dataframe while adding an index to each entry
     r = i // 5      # determine which row to place a new label
     c = i % 5       # determine which column to place new label
     label = tk.Label(frame, text=f"{brnum}", padx=5, image=arrow_icon, compound='right', font=global_font, fg='gray90', bg='gray6') # create new label with brnum + downloading icon
