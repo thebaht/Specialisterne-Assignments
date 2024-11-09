@@ -72,20 +72,21 @@ def download(path, brnum, url, alt_url=pd.NA):
         session.close() # after download has concluded, close the session
 
 
-def daemon_thread_factory():    
-    """Generates threads tagged as daemon, for main()
-    """
-    def create_daemon_thread(*args, **kwargs):
-        thread = threading.Thread(*args, **kwargs)
-        thread.daemon = True
-        return thread
-    return create_daemon_thread()
-
-
 def main():
-    """Iterates through the dataframe with links, creates labels for each, starts the download in seperate threads, then writes the status of each file to a new file.
     """
-    global status_label2
+    Reads the input file, creates a dataframe with the links, 
+    iterates through it, 
+    creates labels for each, 
+    starts the download in seperate threads, 
+    then writes the status of each file to a new file.
+    """
+    df = pd.read_excel(source_path, index_col='BRnum')  # read .xlxs file to a dataframe and use BRNum as the index
+    df = df[df.Pdf_URL.notnull() == True]   # remove cells that doesn't contain a link to a pdf
+    df = df[['Pdf_URL', 'Report Html Address']] # removes irrelevant columns. Not necessary to do, but it only adds 0.01s and feels cleaner.
+
+    for (dirpath, dirnames, filenames) in walk(output_path):    # retrieve information for files in output directory
+        downloaded.update(map(lambda x: x[:-4], filenames))     # add filename without extension to set of downloaded brnums
+
     status_label2.config(text='In Progress..')      # update gui label to indicate download starting
     threads = []    # list to hold threads
     for i, (brnum, row) in enumerate(df.iterrows()):   # iterate through dataframe while adding an index to each entry
@@ -252,14 +253,6 @@ source_path = filedialog.askopenfilename(   # open explorer window to request a 
     title="Select a File",
     filetypes=(("Microsoft Excel Worksheet", "*.xlsx"), ("All Files", "*.*"))
 )
-
-print(f'\nReading file..')
-df = pd.read_excel(source_path, index_col='BRnum')  # read .xlxs file to a dataframe and use BRNum as the index
-df = df[df.Pdf_URL.notnull() == True]   # remove cells that doesn't contain a link to a pdf
-df = df[['Pdf_URL', 'Report Html Address']] # removes irrelevant columns. Not necessary to do, but it only adds 0.01s and feels cleaner.
-
-for (dirpath, dirnames, filenames) in walk(output_path):    # retrieve information for files in output directory
-    downloaded.update(map(lambda x: x[:-4], filenames))     # add filename without extension to set of downloaded brnums
 
 # start main program logic _________________________________________________________________________________________________________________________
 thread = threading.Thread(target=main, daemon=True) # run main() in a different thread than gui, to ensure gui responsiveness
