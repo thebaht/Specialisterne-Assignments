@@ -83,10 +83,18 @@ def daemon_thread_factory():
 
 
 def main():
-    """Iterates through the dataframe with links, starts the download in seperate threads, then writes the status of each file to a new file.
+    """Iterates through the dataframe with links, creates labels for each, starts the download in seperate threads, then writes the status of each file to a new file.
     """
+    global status_label2
+    status_label2.config(text='In Progress..')      # update gui label to indicate download starting
     threads = []    # list to hold threads
-    for brnum, row in df.iterrows():       # get the brnum and data from the dataframe
+    for i, (brnum, row) in enumerate(df.iterrows()):   # iterate through dataframe while adding an index to each entry
+        r = i // 5      # determine which row to place a new label
+        c = i % 5       # determine which column to place new label
+        label = tk.Label(frame, text=f"{brnum}", padx=5, image=arrow_icon, compound='right', font=global_font, fg='gray90', bg='gray6') # create new label with brnum + downloading icon
+        label.grid(row=r, column=c, padx=6, pady=2) # place label at the determined spot in the grid
+        labels[brnum]=label # add reference to label in labels
+        nums.add(brnum) # add brnum to set of all brnums
         if brnum in downloaded:                     # if file already downloaded
             labels[brnum].config(image=check_icon)  # update the icon
             continue                                # continue to next file
@@ -102,7 +110,6 @@ def main():
     [t.join() for t in threads]
     
     # update gui label to indicate download completion
-    global status_label2
     status_label2.config(text='Complete!')  
     
     # write the brnum and download status of each pdf to a file
@@ -253,16 +260,6 @@ df = df[['Pdf_URL', 'Report Html Address']] # removes irrelevant columns. Not ne
 
 for (dirpath, dirnames, filenames) in walk(output_path):    # retrieve information for files in output directory
     downloaded.update(map(lambda x: x[:-4], filenames))     # add filename without extension to set of downloaded brnums
-
-status_label2.config(text='In Progress..')      # update gui label to indicate download starting
-for i, (brnum, row) in enumerate(df.iterrows()):   # iterate through dataframe while adding an index to each entry
-    r = i // 5      # determine which row to place a new label
-    c = i % 5       # determine which column to place new label
-    label = tk.Label(frame, text=f"{brnum}", padx=5, image=arrow_icon, compound='right', font=global_font, fg='gray90', bg='gray6') # create new label with brnum + downloading icon
-    label.grid(row=r, column=c, padx=6, pady=2) # place label at the determined spot in the grid
-    labels[brnum]=label # add reference to label in labels
-    nums.add(brnum) # add brnum to set of all brnums
-    
 
 # start main program logic _________________________________________________________________________________________________________________________
 thread = threading.Thread(target=main, daemon=True) # run main() in a different thread than gui, to ensure gui responsiveness
