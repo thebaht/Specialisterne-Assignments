@@ -1,0 +1,30 @@
+
+
+introduktion:
+	- hvad gik opgaven ud på
+	- hvad er vores løsning
+		- hvad for noget data bruger vi
+	- hvilke elementer har vi
+		- mysql database server
+		- sqlalchemy orm modeller
+		- dbcontext
+		- backend med flask app api
+
+db-forbindelse:
+	- vis og forklar dbcontext + dbinfo
+	- hvordan interacter man med db
+	- hvad er pros/cons af det her setup
+
+backend/api:
+	- singleton dbcontext
+	- flask app
+	- populate db
+	- restful api
+		- url argumenter
+		- json i request body
+		- serializing orm
+	- valg vi tog / hvad vi kunne gøre anderledes
+		- backend w/ api vs controllers + api
+		- serializing orm vs dto
+		- _commit + testmode
+		- create return type
