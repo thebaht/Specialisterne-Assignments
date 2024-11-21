@@ -1,6 +1,5 @@
 ## Today
 - [ ] Præsentation
-- [ ] cykel med far
 - [ ] computer fan
 
 
