@@ -1,6 +1,6 @@
 # Todo
 - [ ] Præsentation
-- [ ] specialisterne mail
+- [x] specialisterne mail
 - [ ] cykel med far
 - [ ] computer fan
 - [ ] søge jobs
