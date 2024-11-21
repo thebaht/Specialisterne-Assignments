@@ -19,6 +19,4 @@
 - [ ] Windows: Default language
 - [ ] fn keys
 - [ ] email forwarding
-### Desktop
-- [ ] mysql server+workbench
-- [ ] phone/desktop calendar sync
+
