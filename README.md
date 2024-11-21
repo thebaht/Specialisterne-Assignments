@@ -1,14 +1,20 @@
-# Todo
+## Today
 - [ ] Præsentation
 - [ ] cykel med far
 - [ ] computer fan
 
-      
+
+<br>
+
+## Coming up
 - [ ] søge jobs
 
 
-# Setup
-### Laptop
+<br>
+<br>
+
+## Setup
+
 - [ ] hideTaskbar
 - [ ] Fix terminal alpha
 - [ ] Rainmeter
@@ -19,3 +25,15 @@
 - [ ] Windows: Login
 - [ ] Windows: Default language
 
+<!--
+For horizontal space: 
+$~~~$       | Math block, ~ indicates the amount of spaces 
+&emsp;      | em size space
+&numsp;     | "figure space"
+&ensp;      | en size space
+&nbsp;      | Normal size space (Non-breaking space)
+&thinsp;    | Thin size space
+
+Vertical space:
+<br>        | line break
+--> 
