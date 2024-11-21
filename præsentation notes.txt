@@ -5,8 +5,8 @@ introduktion:
 - Vores løsning​
 - Featureliste​
 	* MySQL database server​
-	* Database contekst​
-	* Factory med ORM klasser​
+	* Database context + ORM
+	* Factory 
 	* Flask app til API
 
 
