@@ -2,6 +2,7 @@
 - [ ] Præsentation
 - [ ] cykel med far
 - [ ] computer fan
+
       
 - [ ] søge jobs
 
