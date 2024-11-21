@@ -1,8 +1,9 @@
 # Todo
-### Assignment
-- [ ] Portable
-### Misc
-- [ ] CV
+- [ ] Præsentation
+- [ ] specialisterne mail
+- [ ] cykel med far
+- [ ] computer fan
+- [ ] søge jobs
 
 
 # Setup
