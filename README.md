@@ -17,6 +17,4 @@
 - [ ] Markdown editor
 - [ ] Windows: Login
 - [ ] Windows: Default language
-- [ ] fn keys
-- [ ] email forwarding
 
