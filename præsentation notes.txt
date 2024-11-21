@@ -1,30 +1,34 @@
 
 
 introduktion:
-	- hvad gik opgaven ud på
-	- hvad er vores løsning
-		- hvad for noget data bruger vi
-	- hvilke elementer har vi
-		- mysql database server
-		- sqlalchemy orm modeller
-		- dbcontext
-		- backend med flask app api
+- Den stillede opgave​
+- Vores løsning​
+- Featureliste​
+	* MySQL database server​
+	* Database contekst​
+	* Factory med ORM klasser​
+	* Flask app til API
+
 
 db-forbindelse:
-	- vis og forklar dbcontext + dbinfo
-	- hvordan interacter man med db
-	- hvad er pros/cons af det her setup
+- Fungerer som bindeled mellem program og database​
+- Simplificerer database interaktion ​
+	By abstracting the database activities, DbContext makes it simpler to use LINQ queries rather than plain SQL to interface with your database.
+- "change tracking"​
+	It enhances efficiency by automatically keeping track of changes made to your entities and letting you save just the modified versions.
+- Transaktion håndtering​
+	Data integrity is ensured via DbContext's smooth handling of database transactions.
+- Model validering mod databasen
+	 It lowers runtime errors by validating data models against the database structure.
 
 backend/api:
-	- singleton dbcontext
-	- flask app
-	- populate db
-	- restful api
-		- url argumenter
-		- json i request body
-		- serializing orm
-	- valg vi tog / hvad vi kunne gøre anderledes
-		- backend w/ api vs controllers + api
-		- serializing orm vs dto
-		- _commit + testmode
-		- create return type
+- Flask app​
+- REST API​
+	* Argumenter tabel navn og ID fra url​
+	* Yderligere data som json i request body​
+	* Returnerer serialiserede objekter som json
+
+- Ting vi kunne have gjort anderledes​
+	* Controllers ​
+	* Data transfer objects​
+	* ScopedSession
