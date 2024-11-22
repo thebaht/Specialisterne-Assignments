@@ -1,30 +1,44 @@
 
 
 introduktion:
-	- hvad gik opgaven ud på
-	- hvad er vores løsning
-		- hvad for noget data bruger vi
-	- hvilke elementer har vi
-		- mysql database server
-		- sqlalchemy orm modeller
-		- dbcontext
-		- backend med flask app api
+- hvad gik opgaven ud på
+	Opgaven var at lave et lagringssystem med OOP-principper, 
+	der skulle inkludere 
+	*singleton database forbindelse og en factory
+- hvad er vores løsning
+	Vi har lavet vores baseret på en spil-butik, hvor vi har brætspil, kortspil, figurer, etc.
+- hvilke elementer har vi
+	* mysql database server
+	* sqlalchemy orm 
+	* dbcontext
+	* factory
+	* backend med flask app api
+
+mysql database kræver ikke så meget forklaring, så jeg vil først fortælle lidt om vores database context.
 
 db-forbindelse:
-	- vis og forklar dbcontext + dbinfo
-	- hvordan interacter man med db
-	- hvad er pros/cons af det her setup
+- Fungerer som bindeled mellem program og database
+	Database konteksten fungerer som bindeled mellem programmet og databasen, 
+- Simplificerer database interaktion 
+	Simplificerer database interaktion ved at abstrahere hvad databasen gør,
+		og ved at gøre det muligt at bruge LINQ funktioner.
+- "change tracking"
+	Holder styr på om objekter i databasen bliver ændret og automatisk opdatere databasen med ændringerne
+- Transaktion håndtering
+	håndtere database transaktioner, hvilket garanterer data integrity
+- Model validering mod databasen
+	formindsker antallet af runtime errors ved at validere modeller mod databasens struktur
 
 backend/api:
-	- singleton dbcontext
-	- flask app
-	- populate db
-	- restful api
-		- url argumenter
-		- json i request body
-		- serializing orm
-	- valg vi tog / hvad vi kunne gøre anderledes
-		- backend w/ api vs controllers + api
-		- serializing orm vs dto
-		- _commit + testmode
-		- create return type
+- Flask app
+- REST API
+	dvs at objekter bliver sendt frem og tilbage som en repræsentation af objektet i stedet for objektet selv.
+	* Argumenter tabel navn og ID fra url
+	* Yderligere data som json i request body
+	* Returnerer serialiserede objekter som json
+
+
+- Ting vi kunne have gjort anderledes
+	* Controllers 
+	* Data transfer objects
+	* ScopedSession
