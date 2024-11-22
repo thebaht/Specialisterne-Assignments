@@ -1,12 +1,21 @@
-# Todo
-### Assignment
-- [ ] Portable
-### Misc
-- [ ] CV
+## Today
+- [ ] Præsentation
+- [ ] computer fan
 
 
-# Setup
-### Laptop
+<br>
+
+### Coming up
+- [ ] søge jobs
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+## Setup
+
 - [ ] hideTaskbar
 - [ ] Fix terminal alpha
 - [ ] Rainmeter
@@ -16,8 +25,16 @@
 - [ ] Markdown editor
 - [ ] Windows: Login
 - [ ] Windows: Default language
-- [ ] fn keys
-- [ ] email forwarding
-### Desktop
-- [ ] mysql server+workbench
-- [ ] phone/desktop calendar sync
+
+<!--
+For horizontal space: 
+$~~~$       | Math block, ~ indicates the amount of spaces 
+&emsp;      | em size space
+&numsp;     | "figure space"
+&ensp;      | en size space
+&nbsp;      | Normal size space (Non-breaking space)
+&thinsp;    | Thin size space
+
+Vertical space:
+<br>        | line break
+--> 
