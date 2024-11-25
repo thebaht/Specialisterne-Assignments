@@ -5,3 +5,27 @@
 04/evals.csv
 # 03/less_evals.csv
 05/pdf-files
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+08/frontend/node_modules
+08/frontend/.pnp
+08/frontend/.pnp.js
+
+# testing
+08/frontend/coverage
+
+# production
+08/frontend/build
+
+# misc
+08/frontend/.DS_Store
+08/frontend/.env.local
+08/frontend/.env.development.local
+08/frontend/.env.test.local
+08/frontend/.env.production.local
+
+08/frontend/npm-debug.log*
+08/frontend/yarn-debug.log*
+08/frontend/yarn-error.log*
