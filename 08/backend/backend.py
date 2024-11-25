@@ -6,11 +6,13 @@ from flask import Flask, jsonify, request
 from factory import *
 import db_seed
 from sqlalchemy.inspection import inspect
+from flask_cors import CORS
 
 # Initialize database context and Flask app
 dbcontext = DatabaseContext.get_instance()   # Create an instance of the DatabaseContext class
 dbcontext.clear_database()      # Clear the database, to avoid duplicate data when populating
 app = Flask(__name__)           # Initialize a Flask app instance
+CORS(app)
 
 
 #! Populate db with db_seed.py here
