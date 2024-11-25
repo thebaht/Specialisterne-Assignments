@@ -12,7 +12,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/api/item/item/1"); // Replace with your Flask API endpoint
+        const response = await fetch("http://127.0.0.1:5000/api/item/item/1"); 
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
