@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import './App.css'
 
 type Item = {
@@ -12,20 +13,15 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const requestBody = {   price: 200   };
+      const requestBody = {  discount: 20.0   };
       try {
-        const response = await fetch("http://127.0.0.1:5000/api/getitems/item",  {
-          method: "POST",
+        const response = await axios.get("http://localhost:5000/api/items/item", {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(requestBody), // Include JSON body
-        }); 
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const jsonData: Item[] = await response.json();
-        setItems(jsonData);
+          data: requestBody, 
+        });
+        setItems(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }

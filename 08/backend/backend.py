@@ -62,7 +62,8 @@ def serialize_model(obj: Base):
 
 
 
-@app.route('/api/items/<string:table_name>', methods=['GET'])
+# @app.route('/api/items/<string:table_name>', methods=['GET'])
+@app.route('/api/getitems/<string:table_name>', methods=['POST'])
 def get_items(table_name):
     """
     Retrieves multiple items from a specific table in the database based on optional filters.
