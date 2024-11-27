@@ -106,6 +106,7 @@ class Factory:
         description: str,
         price: float,
         quantity: int=0,
+        discount: float=None,
         **kwargs,
     ) -> models.Item:
         r"""Creates a new instance of a database item.
@@ -151,7 +152,7 @@ class Factory:
             "description": description,
             "quantity": quantity,
             "price": price,
-            "discount": 0.0,
+            "discount": None,
         })
 
         return Factory.create_item_from_dict(session, kwargs)
