@@ -7,12 +7,59 @@ from factory import *
 import db_seed
 from sqlalchemy.inspection import inspect
 from flask_cors import CORS
+from sqlalchemy.sql import operators
 
 # Initialize database context and Flask app
 dbcontext = DatabaseContext.get_instance()   # Create an instance of the DatabaseContext class
 dbcontext.clear_database()      # Clear the database, to avoid duplicate data when populating
 app = Flask(__name__)           # Initialize a Flask app instance
 CORS(app)
+
+
+operator_map = {     # dictionary to look up operators from a string
+    '>': operators.gt,
+    '<': operators.lt,
+    '>=': operators.ge,
+    '<=': operators.le,
+    '==': operators.eq,
+    '!=': operators.ne,
+    "in": operators.in_op,
+    "not_in": operators.notin_op,
+    "range": None
+}
+
+default_operator = '=='
+
+def filter_build(table, lst):
+    filters = []
+    for key, value in lst:
+        if isinstance(value, list):
+            operator, value = value
+        else:
+            operator = default_operator
+
+        if operator in operator_map:
+            column = getattr(table, key)
+            if operator == 'range':
+                if isinstance(value, list):
+                    start, end = value
+                    filters.append(column.between(start,end))
+                else:
+                    raise ValueError(f"Invalid range for: {key}")
+            else:
+                filters.append(operator_map[operator](column, value))
+        else:
+            raise ValueError(f"Unsupported operator: {operator}")
+    return filters
+
+""" JSON Filter exempel:
+filter = {
+    "id":       "1",                                                # bruger == som default hvis andet ikke er givet
+    "price":    ["!=", "200"],                                      # Bruger operatoren !=
+    "name":     ["in", ["Settlers of Cataan", "Ticket to ride"]],   # in og not_in, tager liste af vilkårlig længde
+    "discount": ["range", [10, 20]],                                # Range query tager liste med længde == 2.
+}
+"""
 
 
 #! Populate db with db_seed.py here
@@ -79,7 +126,7 @@ def get_items(table_name):
     try:
         table = models.TABLES_GET(table_name).cls # Get the table class from on its name
         if filter := request.json.items(): # Extract filter criteria from the request body
-            filter = [getattr(table, key) == value for key, value in filter] # Reformat filter to use as arguments for query
+            filter = filter_build(table, filter) # Reformat filter to use as arguments for query
             data = session.query(table).filter(and_(*filter)).all() # Query the table with the filter
         else:
             data = session.query(table).all() # If no filter, fetch all rows from the table
@@ -195,7 +242,7 @@ def update_items(table_name):
         re = request.json
         blueprint = dict(re["blueprint"].items()) # Extract the update data from request body, and parse it into a dictionary
         if filter := re["filter"].items(): # Extract filter criteria from the request body
-            filter = [getattr(table, key) == value for key, value in filter] # Reformat filter to use as arguments for query
+            filter = filter_build(table, filter) # Reformat filter to use as arguments for query
             data = session.query(table).filter(and_(*filter)).update(blueprint) # Update filtered items with the update data
         else:
             data = session.query(table).update(blueprint) # Update all items in table if no filter provided
