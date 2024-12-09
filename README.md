@@ -12,7 +12,7 @@
 <br>
 
 ### Assignments to do more
-- [ ] w08 frontend
+- [ ] w8 frontend
 
 <br>
 <br>
