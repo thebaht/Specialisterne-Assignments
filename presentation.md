@@ -6,7 +6,7 @@ Opgaven var at lavet et fullstack program, med en populeret database, en api, en
 
 ## Backend
 
-Vi brugte en mysql server, sqlalchemy orm (som vi snakkede om i en tidligere præsentation) og en flask app til at manage backend.
+Vi brugte en mysql server, sqlalchemy orm (som vi har snakket om i en tidligere præsentation) og en flask app til at manage backend.
 I vores database har vi en tabel med produkter og en med product_details, producenter, ordre og brugere. 
 Billederne til produkterne er gemt locally i en statisk mappe, der er exposed så den kan tilgås på vores backend url. Like localhost/static/images/billedet.jpg, og paths til billederne er så gemt i databasen. Så når det bliver sendt til frontend får den en url den bare kan hente billedet direkte fra.
 
